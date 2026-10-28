@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Din handlingslista</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Gelasio:wght@400;500&display=swap">
+<style>
+:root{--sage:#cfdab7;--sage-d:#a5b290;--cream:#f9f8e0;--wine:#4a0a05;--ink:#111;--box:#8f9a78;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Gelasio,Georgia,serif;color:var(--ink);background:var(--sage);min-height:100vh}
+body.list{background:var(--cream)}
+h1,h2{font-family:Italiana,"Didot",Georgia,serif;font-weight:400;margin:0}
+.view{display:none}.view.on{display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--wine);outline-offset:3px}
+
+/* Startsida */
+.top{text-align:center;padding:28px 16px 10px;position:relative}
+.burger{position:absolute;left:clamp(12px,3vw,40px);top:30px;background:none;border:0;width:48px;height:48px;border-radius:50%;display:grid;place-content:center}
+.burger:hover{background:rgba(74,10,5,.1)}
+.burger svg{width:30px;height:30px}
+.hmenu{left:clamp(12px,3vw,40px);right:auto;top:82px;text-align:left}
+.top h1{font-size:clamp(40px,8vw,84px);color:var(--wine);line-height:1.1}
+nav{background:var(--sage-d);display:flex;justify-content:center;gap:clamp(20px,6vw,46px);padding:14px 12px;flex-wrap:wrap}
+nav button{background:none;border:0;color:#fff;font-size:clamp(18px,3vw,28px);text-decoration:underline;text-underline-offset:4px;padding:0}
+nav button[aria-current=true]{text-decoration-thickness:3px}
+.home{max-width:1100px;margin:0 auto;padding:clamp(36px,7vw,90px) clamp(20px,5vw,60px);position:relative;min-height:60vh}
+.home h2{font-family:Gelasio,serif;font-size:clamp(22px,3vw,34px);color:var(--wine);text-decoration:underline;text-underline-offset:5px;margin-bottom:26px}
+.pills{display:flex;flex-direction:column;gap:30px;align-items:flex-start}
+.pill{width:280px;max-width:100%;background:var(--cream);border:0;border-radius:30px;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;font-size:27px;text-align:left;transition:transform .15s}
+.pill:hover{transform:translateX(5px)}
+.pill svg{width:16px;height:20px}
+.empty{font-size:22px;color:var(--wine);max-width:420px;line-height:1.5}
+.citrus{position:absolute;right:clamp(0px,4vw,60px);bottom:20px;width:clamp(150px,26vw,330px)}
+
+/* Listsida */
+.page{max-width:1200px;margin:0 auto;padding:22px clamp(16px,4vw,56px) 140px;position:relative;overflow:hidden;min-height:100vh}
+.bar{display:flex;align-items:flex-end;gap:clamp(14px,4vw,60px);flex-wrap:wrap}
+.back{background:none;border:0;padding:6px;align-self:center;display:flex;border-radius:50%}
+.back:hover{background:rgba(143,154,120,.25)}
+.back svg{width:34px;height:34px}
+.bar h2{font-size:clamp(38px,6vw,68px);line-height:1}
+.bar .month{font-family:Italiana,serif;font-size:clamp(22px,3vw,36px)}
+.share{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;background:none;border:0;gap:0;padding:6px 8px;border-radius:10px}
+.share:hover{background:rgba(143,154,120,.2)}
+.share .e{width:38px;height:38px;display:block;margin-right:-8px}
+.share span:last-child{font-size:15px}
+.more{position:relative;align-self:flex-start}
+.dots{background:none;border:0;width:44px;height:44px;border-radius:50%;display:grid;place-content:center;gap:4px}
+.dots:hover{background:rgba(143,154,120,.25)}
+.dots i{display:block;width:6px;height:6px;border-radius:50%;background:#111}
+.menu{position:absolute;right:0;top:48px;background:#fffef2;border:2px solid var(--box);border-radius:16px;padding:6px;min-width:230px;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.menu[hidden]{display:none}
+.menu button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:12px 14px;font-size:18px}
+.menu button:hover{background:rgba(143,154,120,.25)}
+.menu .danger{color:#9a1b10}
+.items{list-style:none;margin:30px 0 0;padding:0;max-width:930px;position:relative;z-index:1}
+.items li{display:flex;align-items:center;gap:22px;border-bottom:1px solid #6c6c5a;padding:20px 4px 12px}
+.items input[type=checkbox]{appearance:none;width:42px;height:42px;border:4px solid var(--box);border-radius:5px;margin:0;flex:none;cursor:pointer;display:grid;place-content:center;background:transparent}
+.items input:checked{background:var(--box)}
+.items input:checked::after{content:"";width:9px;height:17px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-2px)}
+.items label{font-size:clamp(24px,3.4vw,38px);flex:1;cursor:pointer}
+.items li.done label{text-decoration:line-through;opacity:.55}
+.del{background:none;border:0;font-size:22px;opacity:.4;padding:4px 8px}
+.del:hover{opacity:1}
+.add{display:flex;gap:12px;max-width:930px;margin-top:26px;position:relative;z-index:1}
+.add input{flex:1;font:inherit;font-size:22px;padding:12px 18px;border:2px solid var(--box);border-radius:30px;background:#fffef2;min-width:0}
+.add button{background:var(--box);color:#fff;border:0;border-radius:30px;padding:12px 24px;font-size:20px}
+.fruit{position:absolute;opacity:.4;pointer-events:none;user-select:none;line-height:1}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);background:var(--wine);color:#fff;padding:12px 22px;border-radius:30px;opacity:0;transition:.25s;z-index:9}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<section class="view on" id="home">
+  <header class="top">
+    <button class="burger" id="burger" aria-label="Meny" aria-haspopup="true" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#4a0a05" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <div class="menu hmenu" id="hmenu" hidden>
+      <button id="hNew">Ny lista</button>
+      <button data-tab="mina">Mina listor</button>
+      <button data-tab="delade">Delade listor</button>
+      <button data-tab="arkiv">Arkiverade listor</button>
+    </div>
+    <h1>Din handlingslista</h1>
+  </header>
+  <nav aria-label="Huvudmeny">
+    <button data-tab="mina" aria-current="true">Mina listor</button>
+    <button data-tab="delade">Delade listor</button>
+    <button data-tab="arkiv">Arkiverade listor</button>
+  </nav>
+  <div class="home">
+    <h2 id="homeTitle">Dina senast öppnade listor</h2>
+    <div class="pills" id="pills"></div>
+    <svg class="citrus" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="68" cy="70" r="62" fill="#efe58a"/><circle cx="68" cy="70" r="52" fill="#f6efb0"/>
+      <g stroke="#e4d775" stroke-width="2"><path d="M68 18v104M16 70h104M31 33l74 74M105 33L31 107"/></g>
+      <circle cx="155" cy="62" r="42" fill="#ee9a45"/><circle cx="155" cy="62" r="34" fill="#f6b46a"/>
+      <g stroke="#e58a35" stroke-width="2"><path d="M155 28v68M121 62h68M131 38l48 48M179 38l-48 48"/></g>
+      <circle cx="132" cy="140" r="48" fill="#7cc02c"/><circle cx="132" cy="140" r="40" fill="#bfe26a"/>
+      <g stroke="#e9f6bd" stroke-width="2"><path d="M132 100v80M92 140h80M104 112l56 56M160 112l-56 56"/></g>
+    </svg>
+  </div>
+</section>
+
+<section class="view" id="list">
+  <div class="page">
+    <div class="bar">
+      <button class="back" id="back" aria-label="Tillbaka till startsidan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2>Månadshandling</h2>
+      <span class="month" id="monthLabel">Okt 2026</span>
+      <button class="share" id="share" aria-label="Dela listan med en vän">
+        <svg class="e" viewBox="0 0 36 36" aria-hidden="true" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round"><circle cx="15" cy="21" r="12"/><circle cx="11" cy="18" r="1.4" fill="#111" stroke="none"/><circle cx="19" cy="18" r="1.4" fill="#111" stroke="none"/><path d="M9.5 24c2.8 3.6 8.2 3.6 11 0"/><path d="M28 3v10M23 8h10"/></svg>
+        <span>Dela listan med en vän</span>
+      </button>
+      <div class="more">
+        <button class="dots" id="more" aria-label="Fler val för listan" aria-haspopup="true" aria-expanded="false"><i></i><i></i><i></i></button>
+        <div class="menu" id="menu" hidden>
+          <button id="mClear">Ta bort avbockade</button>
+          <button id="mArch">Arkivera listan</button>
+          <button id="mDel" class="danger">Radera listan</button>
+        </div>
+      </div>
+    </div>
+    <ul class="items" id="items"></ul>
+    <div class="add">
+      <input id="newItem" type="text" placeholder="Lägg till något på listan" aria-label="Ny sak på listan">
+      <button id="addBtn">Lägg till</button>
+    </div>
+    <span class="fruit" style="right:3%;top:210px;font-size:110px">🥑</span>
+    <span class="fruit" style="right:8%;top:100px;font-size:90px">🫐</span>
+    <span class="fruit" style="left:46%;bottom:200px;font-size:72px">🍇</span>
+    <span class="fruit" style="left:4%;bottom:20px;font-size:100px">🥝</span>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var lists = {
+  oktober:   {name:"Oktober",   label:"Okt 2026", items:[["Tvättmedel",1],["Sötpotatis",0],["Nötfärs",0],["Grönkål",0],["Dadlar",0]]},
+  september: {name:"September", label:"Sep 2026", items:[["Havregryn",1],["Äpplen",1],["Kaffe",0]]},
+  augusti:   {name:"Augusti",   label:"Aug 2026", items:[["Vattenmelon",1],["Glass",1],["Solkräm",1]]},
+  juli:      {name:"Juli",      label:"Jul 2026", items:[["Jordgubbar",1],["Grillkol",1]]}
+};
+var current = "oktober", homeTab = "mina";
+function hasArch(){return Object.keys(lists).some(function(k){return lists[k].archived})}
+var $ = function(id){return document.getElementById(id)};
+var arrow = '<svg viewBox="0 0 16 20" fill="none" stroke="#111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3l7 7-7 7"/></svg>';
+
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},2000)}
+
+function renderHome(tab){
+  tab = tab || "mina"; homeTab = tab;
+  document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab)});
+  var p=$("pills");
+  if(tab==="mina"||(tab==="arkiv"&&hasArch())){
+    $("homeTitle").textContent=tab==="arkiv"?"Arkiverade listor":"Dina senast öppnade listor";
+    p.innerHTML="";
+    Object.keys(lists).filter(function(k){return !!lists[k].archived===(tab==="arkiv")}).forEach(function(k){
+      var b=document.createElement("button");b.className="pill";
+      b.innerHTML="<span>"+lists[k].name+"</span>"+arrow;
+      b.onclick=function(){location.hash=k};
+      p.appendChild(b);
+    });
+  } else {
+    $("homeTitle").textContent = tab==="delade" ? "Delade listor" : "Arkiverade listor";
+    p.innerHTML='<p class="empty">'+(tab==="delade"
+      ? "Inga listor är delade med dig än. När en vän delar en lista dyker den upp här."
+      : "Du har inga arkiverade listor. Arkiverade listor samlas här.")+"</p>";
+  }
+}
+
+function renderList(){
+  var l=lists[current], ul=$("items");
+  $("monthLabel").textContent=l.label;
+  ul.innerHTML="";
+  l.items.forEach(function(it,i){
+    var li=document.createElement("li");if(it[1])li.className="done";
+    li.innerHTML='<input type="checkbox" id="i'+i+'"'+(it[1]?" checked":"")+'><label for="i'+i+'"></label><button class="del" aria-label="Ta bort">✕</button>';
+    li.querySelector("label").textContent=it[0];
+    li.querySelector("input").onchange=function(e){it[1]=e.target.checked?1:0;li.classList.toggle("done",!!it[1])};
+    li.querySelector(".del").onclick=function(){l.items.splice(i,1);renderList()};
+    ul.appendChild(li);
+  });
+}
+
+function route(){
+  var h=location.hash.replace("#","");
+  if(lists[h]){
+    current=h;renderList();
+    $("home").classList.remove("on");$("list").classList.add("on");document.body.classList.add("list");
+  } else {
+    $("list").classList.remove("on");$("home").classList.add("on");renderHome(homeTab);document.body.classList.remove("list");
+  }
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){renderHome(b.dataset.tab)}});
+$("back").onclick=function(){location.hash="start"};
+$("share").onclick=function(){
+  var url=location.href;
+  try{navigator.clipboard.writeText(url).then(function(){toast("Länk kopierad – skicka den till en vän")},function(){toast("Listan är redo att delas")})}
+  catch(e){toast("Listan är redo att delas")}
+};
+function add(){var v=$("newItem").value.trim();if(!v)return;lists[current].items.push([v,0]);$("newItem").value="";renderList()}
+$("addBtn").onclick=add;
+$("newItem").addEventListener("keydown",function(e){if(e.key==="Enter")add()});
+var menu=$("menu");
+function closeMenu(){menu.hidden=true;$("more").setAttribute("aria-expanded","false");$("mDel").textContent="Radera listan"}
+$("more").onclick=function(e){e.stopPropagation();var wasClosed=menu.hidden;closeMenu();if(wasClosed){menu.hidden=false;$("more").setAttribute("aria-expanded","true");$("mArch").textContent=lists[current].archived?"Återställ listan":"Arkivera listan"}};
+document.addEventListener("click",function(e){if(!menu.contains(e.target))closeMenu()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeMenu()});
+$("mClear").onclick=function(){lists[current].items=lists[current].items.filter(function(i){return !i[1]});renderList();closeMenu();toast("Avbockade varor är borttagna")};
+$("mArch").onclick=function(){var l=lists[current];l.archived=!l.archived;closeMenu();toast(l.archived?"Listan är arkiverad":"Listan är återställd");location.hash="start"};
+$("mDel").onclick=function(){if($("mDel").textContent!=="Radera listan"){delete lists[current];closeMenu();toast("Listan är raderad");location.hash="start"}else{$("mDel").textContent="Tryck igen för att radera"}};
+var hm=$("hmenu");
+function closeH(){hm.hidden=true;$("burger").setAttribute("aria-expanded","false")}
+$("burger").onclick=function(e){e.stopPropagation();var c=hm.hidden;closeH();if(c){hm.hidden=false;$("burger").setAttribute("aria-expanded","true")}};
+document.addEventListener("click",function(e){if(!hm.contains(e.target))closeH()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeH()});
+hm.querySelectorAll("[data-tab]").forEach(function(b){b.onclick=function(){closeH();renderHome(b.dataset.tab)}});
+$("hNew").onclick=function(){closeH();var n=1;while(lists["lista-"+n])n++;lists["lista-"+n]={name:"Ny lista "+n,label:"Okt 2026",items:[]};location.hash="lista-"+n};
+window.addEventListener("hashchange",route);
+renderHome();route();
+</script>
+</body>
+</html>
